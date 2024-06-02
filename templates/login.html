@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>LOGIN</title>
+</head>
+<body>
+    <header>
+        <h1>LOGIN</h1>
+    </header>
+    <div class="container">
+        <p>Login</p>
+        <form action="/login" method="POST" style="display:block;">
+            <input type="text" name="username" placeholder="USERNAME" required>
+            <input type="text" name="password" placeholder="PASSWORD" required>
+            <input type="submit" value="Next">
+          </form>   
+      </div>
+      {% if error %}
+        <p class="error">{{ error }}</p>
+      {% endif %}
+</html>

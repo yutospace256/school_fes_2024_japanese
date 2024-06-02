@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>EXPLAIN</title>
+</head>
+<body>
+    <header>
+        <h1>EXPLAIN</h1>
+    </header>
+    <a>Mission description.</a>
+    <!-- Create a check box to check if you understand and proceed to ‘/game’. -->
+    <p>{{ user_id }}</p>
+    <form action="/game" method="POST">
+        <input type="checkbox" name="agree" value="agree" required>
+        <input type="submit" value="Next">
+    </form>
+</html>
