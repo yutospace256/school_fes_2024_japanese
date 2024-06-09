@@ -7,5 +7,11 @@
     <header>
         <h1>GAME HOME</h1>
     </header>
-    
+    <a>Mission Code</a>
+    <p>{{ user_id }}</p>
+    <form method="POST">
+        <input type="text" name="mission_code" placeholder="Mission Code" required>
+        <input type="hidden" name="missioncode">
+        <input type="submit" value="Next">
+    </form>
 </body>

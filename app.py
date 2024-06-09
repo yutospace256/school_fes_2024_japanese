@@ -33,7 +33,7 @@ def index():
 def signin():
     if request.method == 'POST':
         username = request.form['username']
-
+        password = request.form['password']
         # Create a new SqliteConnector instance for this request
         with SqliteConnector('fes_app.db') as db:  # Context manager for automatic closing
             # Check if the username already exists
@@ -41,12 +41,12 @@ def signin():
             if user:
                 return render_template('signin.html', error='error: This username is already exist.')  # Display error message in HTML
 
-            password = request.form['password']
+            
             now_time = datetime.now()
             user_id = cop.generate_uuid(uuid.NAMESPACE_DNS, str(now_time))
 
             # Insert new user using the connection from the context manager
-            db.insert_data('INSERT INTO User (user_id, username, password) VALUES (?, ?, ?)', (user_id, username, password))
+            db.insert_data('INSERT INTO User (user_id, username, password, points, episode) VALUES (?, ?, ?, ?, ?)', (user_id, username, password, 0, 0))
             session['user_id'] = user_id
         return redirect(url_for('explain'))
     return render_template('signin.html')
@@ -62,7 +62,7 @@ def login():
             # Fetch user using the connection from the context manager
             user = db.fetch_data('SELECT * FROM User WHERE username = ? AND password = ?', (username, password))
             # get user_id
-            user_id = db.fetch_data('SELECT user_id FROM User WHERE username = ?', (username,))
+            user_id = user[0][1]
             if user:
                 session['user_id'] = user_id
                 return redirect(url_for('explain'))
@@ -72,23 +72,67 @@ def login():
 
 @app.route('/explain', methods=['GET', 'POST'])
 def explain():
-    user_id = session.get('user_id')
-    if not user_id:
-        return redirect(url_for('login'))
-    user_id = user_id[0][0]
-    # Use SqliteConnector for thread-safe connection
-    with SqliteConnector('fes_app.db') as db:
-        user = db.fetch_data('SELECT * FROM User WHERE user_id = ?', (user_id,))
-        if user:
-              # Assuming user is a list of dictionaries
-            return render_template('explain.html', user_id=user)
-        else:
-            return 'User not found.'  # Handle case where user is not found
-
+    user = cop.get_user_id()
+    if user:
+        return render_template('explain.html', user_id=user)
+    else:
+        return 'User not found.'  # Handle case where user is not found
+    
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
-    return render_template('game.html')
+    user = cop.get_user_id()
+    if user:
+        game_start = datetime.now()
+        session['game_start'] = game_start
+        if request.method == 'POST' and 'missioncode' in request.form:
+            input_code = request.form['mission_code']
+            with SqliteConnector('fes_app.db') as db:
+                # Get the data for mission_code=input_code in the misssion table.
+                mission = db.fetch_data('SELECT * FROM mission WHERE mission_code = ?', (input_code,))
+                if mission:
+                    session['mission_id'] = mission[0][1]
+                    return redirect(url_for('mission'))
+                else:
+                    return 'Mission not found.'
+        return render_template('game.html', user_id=user)
+    else:
+        return 'User not found.'  # Handle case where user is not found
+    
+@app.route('/mission', methods=['GET', 'POST'])
+def mission():
+    user = cop.get_user_id()
+    mission_id = session.get('mission_id')
+    USER = User(user[0][1], user[0][2], user[0][3], user[0][4], user[0][5])
+    if user:
+        if request.method == 'POST' and 'cipher_entry' in request.form:
+            cipher = request.form['cipher']
+            with SqliteConnector('fes_app.db') as db:
+                cipher_data = db.fetch_data('SELECT * FROM Cipher WHERE mission_id = ? AND cipher = ?', (mission_id, cipher))
+                if cipher_data:
+                    print(cipher_data[0][1])
+                    # Check if user_id =USER.id,cipher_id=cipher_data[0][1] exists in the Logs table.
+                    log = db.fetch_data('SELECT * FROM Logs WHERE user_id = ? AND cipher_id = ?', (USER.id, cipher_data[0][1]))
+                    if log:
+                        return render_template('mission.html', user_id=user, mission_id=mission_id, cipher_data=cipher_data, error='error: You have already solved this cipher.')    
+                    # Update points using retrieved data (assuming User class with add_points)
+                    USER.add_points(cipher_data[0][4])
+                    # Update data in USER.points to the points column of the User table in sql
+                    db.update_data('UPDATE User SET points = ? WHERE user_id = ?', (USER.points, USER.id))
+                    # Insert log data
+                    db.insert_data('INSERT INTO Logs (user_id, cipher_id) VALUES (?, ?)', (USER.id, cipher_data[0][1]))
+                return render_template('mission.html', user_id=user, mission_id=mission_id)
+        elif request.method == 'POST' and 'back_game' in request.form:
+            # progress episode 
+            # I should update this code for episode progress
+            with SqliteConnector('fes_app.db') as db:
+                db.update_data('UPDATE User SET points = ? WHERE user_id = ?', (USER.points, USER.id))
+            return redirect(url_for('game'))
+        else:
+            return render_template('mission.html', user_id=user, mission_id=mission_id)
+    else:
+        return 'User not found.'
+
 
 if __name__ == '__main__':
   app.run(debug=True)

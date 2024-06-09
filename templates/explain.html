@@ -10,8 +10,9 @@
     <a>Mission description.</a>
     <!-- Create a check box to check if you understand and proceed to ‘/game’. -->
     <p>{{ user_id }}</p>
-    <form action="/game" method="POST">
-        <input type="checkbox" name="agree" value="agree" required>
-        <input type="submit" value="Next">
-    </form>
+    <p>{{ session_user_id }}</p>
+    <form method="POST" action="{{ url_for('game') }}">
+        <input type="checkbox" required>
+        <input type="submit" name="gamestart" value="Next">
+      </form>      
 </html>

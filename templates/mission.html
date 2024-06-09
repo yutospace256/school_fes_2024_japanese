@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>MISSION</title>
+</head>
+<body>
+    <header>
+        <h1>MISSION</h1>
+    </header>
+    <p>{{ user_id }}</p>
+    <p>{{ mission_id }}</p>
+    <form method="POST">
+        <input type="text" name="cipher" placeholder="cipher" required>
+        <input type="hidden" name="cipher_entry">
+        <input type="submit" value="Next">
+    </form>
+    <form method="POST">
+        <input type="hidden" name="back_game">
+        <input type="submit" value="Back">
+    </form>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if cipher_data %}
+        <p class="cipher_data">{{ cipher_data }}</p>
+    {% endif %}
+</html>
