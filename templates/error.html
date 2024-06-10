@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>User Not Found</title>
+</head>
+<body>
+    {% if error_code == 1 %}
+    <h1>User Not Found</h1>
+    <p>We couldn't find the user associated with this session.</p>
+    {% elif error_code == 2 %}
+    <h1>Mission code incorrect</h1>
+    <p>The mission code you entered is incorrect. Please try again.</p>
+    {% endif %}
+
+        <a href={{ site }}>Go Back to {{ site }}</a>  </body>
+</html>

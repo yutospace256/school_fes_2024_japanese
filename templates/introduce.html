@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>EXPLAIN</title>
+  <title>INTRODUCE</title>
 </head>
 <body>
     <header>
-        <h1>EXPLAIN</h1>
+        <h1>INTRODUCE</h1>
     </header>
     <a>Mission description.</a>
     <!-- Create a check box to check if you understand and proceed to ‘/game’. -->
     <p>{{ user_id }}</p>
     <p>{{ session_user_id }}</p>
-    <form method="POST" action="{{ url_for('game') }}">
+    <form method="POST">
         <input type="checkbox" required>
-        <input type="submit" name="gamestart" value="Next">
+        <input type="submit" name="game_start" value="Next">
       </form>      
 </html>

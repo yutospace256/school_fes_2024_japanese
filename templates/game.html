@@ -2,11 +2,65 @@
 <html lang="ja">
 <head>
   <title>GAME HOME</title>
+  <style>
+    #progress-bar {
+    height: 20px;  /* Adjust height as desired */
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;  /* Add rounded corners */
+    }
+
+    #progress-bar:before {
+    content: '';
+    display: block;
+    height: 100%;  /* Full height of the progress bar */
+    background-color: #007bff;  /* Adjust color as desired */
+    transition: width 1s ease-in-out;  /* Add smooth transition */
+    }
+
+  </style>
+  <script>
+    var endTime = {{ game_end }};
+
+    function updateTime() {
+    currentTime = new Date();
+    console.log(currentTime);
+    if (endTime) {
+        remainingTime = endTime.getTime() - currentTime.getTime();
+        console.log(remainingTime);
+        if (remainingTime > 0) {
+        // Calculate percentage of remaining time (with a maximum of 5 minutes)
+        var totalTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+        var progress = (remainingTime / totalTime) * 100;
+        progressBar.style.width = '20%';
+        } else {
+        // Handle end of game
+        progressBar.style.width = '0%';
+        // ... your end-game logic here (e.g., disable actions, display message)
+        }
+    } else {
+        // Handle case where end_time hasn't been received yet
+        timeDisplay.textContent = 'Waiting for game start...';
+    }
+    }
+
+    // Assuming updateTime is defined elsewhere and handles the countdown logic
+    function setEndTime(pythonEndTime) {
+    endTime = new Date(pythonEndTime);  // Parse end_time from Python format
+    updateTime();  // Start the update loop
+    }
+
+    // Reference your progress bar and time display elements in the HTML
+    var progressBar = document.getElementById('progress-bar');
+
+    window.onload = updateTime;  // Call update function on page load
+  </script>
 </html>
 <body>
     <header>
         <h1>GAME HOME</h1>
     </header>
+    <div id="progress-bar"></div>
     <a>Mission Code</a>
     <p>{{ user_id }}</p>
     <form method="POST">
