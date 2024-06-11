@@ -1,7 +1,7 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_session import Session
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 import uuid
 
 from python_func.sql_connector import SqliteConnector
@@ -13,7 +13,7 @@ dbname = 'fes_app.db'
 
 cop = CommonObjectProcessor()
 
-# Flask setu@
+# Flask setup
 app = Flask(__name__)
 app.secret_key = "694c64d6-e1a5-5aae-9cef-18671138b4e0"
 app.permanent_session_lifetime = timedelta(minutes=10)
@@ -48,7 +48,7 @@ def signin():
             # Insert new user using the connection from the context manager
             db.insert_data('INSERT INTO User (user_id, username, password, points, episode) VALUES (?, ?, ?, ?, ?)', (user_id, username, password, 0, 0))
             session['user_id'] = user_id
-        return redirect(url_for('explain'))
+        return redirect(url_for('introduce'))
     return render_template('signin.html')
 
 
@@ -61,30 +61,35 @@ def login():
         with SqliteConnector('fes_app.db') as db:  # Use SqliteConnector for thread safety
             # Fetch user using the connection from the context manager
             user = db.fetch_data('SELECT * FROM User WHERE username = ? AND password = ?', (username, password))
-            # get user_id
-            user_id = user[0][1]
             if user:
+                # get user_id
+                user_id = user[0][1]
                 session['user_id'] = user_id
-                return redirect(url_for('explain'))
+                return redirect(url_for('introduce'))
             return render_template('login.html', error='error: Username or password is incorrect.')
     return render_template('login.html')
 
 
-@app.route('/explain', methods=['GET', 'POST'])
-def explain():
+@app.route('/introduce', methods=['GET', 'POST'])
+def introduce():
     user = cop.get_user_id()
     if user:
-        return render_template('explain.html', user_id=user)
+        if request.method == 'POST' and 'game_start' in request.form:
+            # Use GMT timezone
+            game_start = datetime.now(timezone.utc)
+            session['game_start'] = game_start
+            return redirect(url_for('game'))
+        return render_template('introduce.html', user_id=user)
     else:
-        return 'User not found.'  # Handle case where user is not found
+        return render_template("error.html", site="/introduce", error_code=1)  # Handle case where user is not found
     
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
     user = cop.get_user_id()
     if user:
-        game_start = datetime.now()
-        session['game_start'] = game_start
+        game_start = session.get('game_start')
+        print(game_start)
         if request.method == 'POST' and 'missioncode' in request.form:
             input_code = request.form['mission_code']
             with SqliteConnector('fes_app.db') as db:
@@ -94,10 +99,13 @@ def game():
                     session['mission_id'] = mission[0][1]
                     return redirect(url_for('mission'))
                 else:
-                    return 'Mission not found.'
-        return render_template('game.html', user_id=user)
+                    return render_template("error.html", site="/game", error_code=2)  # Handle case where mission is not found
+        end_time = game_start + timedelta(minutes=5)
+        end_time_timestamp = int(end_time.timestamp() * 1000)  # Convert to milliseconds
+        print(end_time)
+        return render_template('game.html', user_id=user, end_time=end_time_timestamp)
     else:
-        return 'User not found.'  # Handle case where user is not found
+        return render_template("error.html", site="/game", error_code=1)  # Handle case where user is not found
     
 @app.route('/mission', methods=['GET', 'POST'])
 def mission():
@@ -110,7 +118,6 @@ def mission():
             with SqliteConnector('fes_app.db') as db:
                 cipher_data = db.fetch_data('SELECT * FROM Cipher WHERE mission_id = ? AND cipher = ?', (mission_id, cipher))
                 if cipher_data:
-                    print(cipher_data[0][1])
                     # Check if user_id =USER.id,cipher_id=cipher_data[0][1] exists in the Logs table.
                     log = db.fetch_data('SELECT * FROM Logs WHERE user_id = ? AND cipher_id = ?', (USER.id, cipher_data[0][1]))
                     if log:
@@ -131,7 +138,7 @@ def mission():
         else:
             return render_template('mission.html', user_id=user, mission_id=mission_id)
     else:
-        return 'User not found.'
+        return render_template("error.html", site="/mission", error_code=1)
 
 
 if __name__ == '__main__':
