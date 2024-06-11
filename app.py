@@ -1,7 +1,7 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_session import Session
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 import uuid
 
 from python_func.sql_connector import SqliteConnector
@@ -13,7 +13,7 @@ dbname = 'fes_app.db'
 
 cop = CommonObjectProcessor()
 
-# Flask setu@
+# Flask setup
 app = Flask(__name__)
 app.secret_key = "694c64d6-e1a5-5aae-9cef-18671138b4e0"
 app.permanent_session_lifetime = timedelta(minutes=10)
@@ -75,8 +75,8 @@ def introduce():
     user = cop.get_user_id()
     if user:
         if request.method == 'POST' and 'game_start' in request.form:
-            game_start = datetime.now()
-            game_start = game_start + timedelta(minutes=5)
+            # Use GMT timezone
+            game_start = datetime.now(timezone.utc)
             session['game_start'] = game_start
             return redirect(url_for('game'))
         return render_template('introduce.html', user_id=user)
@@ -89,6 +89,7 @@ def game():
     user = cop.get_user_id()
     if user:
         game_start = session.get('game_start')
+        print(game_start)
         if request.method == 'POST' and 'missioncode' in request.form:
             input_code = request.form['mission_code']
             with SqliteConnector('fes_app.db') as db:
@@ -99,7 +100,10 @@ def game():
                     return redirect(url_for('mission'))
                 else:
                     return render_template("error.html", site="/game", error_code=2)  # Handle case where mission is not found
-        return render_template('game.html', user_id=user, game_end=game_start)
+        end_time = game_start + timedelta(minutes=5)
+        end_time_timestamp = int(end_time.timestamp() * 1000)  # Convert to milliseconds
+        print(end_time)
+        return render_template('game.html', user_id=user, end_time=end_time_timestamp)
     else:
         return render_template("error.html", site="/game", error_code=1)  # Handle case where user is not found
     
