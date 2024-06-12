@@ -59,10 +59,10 @@ logs_table = '''CREATE TABLE IF NOT EXISTS Logs (
 # cursor.execute(user_table)
 #cursor.execute(logs_table)
 
-cipher_data = (6789, 2345, 6789, 1)  # Replace with appropriate values if needed
+cipher_data = (5678, 3456, 5678, 1)  # Replace with appropriate values if needed
 #cursor.execute('INSERT INTO Cipher (cipher_id, mission_id, cipher, point) VALUES (?, ?, ?, ?)', cipher_data)
 
-mission_data = (2345, 2345, 0)  # Replace with appropriate values if needed
+mission_data = (3456, 3456, 0)  # Replace with appropriate values if needed
 #cursor.execute('INSERT INTO Mission (mission_id, mission_code, img_domain) VALUES (?, ?, ?)', mission_data)
 
 # Save changes and close the connection

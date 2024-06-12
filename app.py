@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import timedelta, datetime, timezone
 import uuid
 
@@ -107,6 +107,9 @@ def game():
                     return render_template("error.html", site="/game", error_code=2)  # Handle case where mission is not found
         end_time = game_start + timedelta(minutes=5)
         end_time_timestamp = int(end_time.timestamp() * 1000)  # Convert to milliseconds
+        if session.get('mission_success'):
+            session.pop('mission_success', None)  # Clear the flag after displaying the message
+            return render_template('game.html', user_id=user, end_time=end_time_timestamp, message="Mission succeeded")
         return render_template('game.html', user_id=user, end_time=end_time_timestamp)
     else:
         return render_template("error.html", site="/game", error_code=1)  # Handle case where user is not found
@@ -127,14 +130,16 @@ def mission():
                     log = db.fetch_data('SELECT * FROM Logs WHERE user_id = ? AND mission_id = ?', (USER.id, mission_id))
                     if log:
                         return render_template('error.html', site="/game", error_code=5)    
-                    # Update points using retrieved data (assuming User class with add_points)
+                    # Update points and episode using retrieved data (assuming User class with add_points)
                     USER.add_points(cipher_data[0][4])
                     # Update data in USER.points to the points column of the User table in sql
                     db.update_data('UPDATE User SET points = ? WHERE user_id = ?', (USER.points, USER.id))
+                    db.update_data("UPDATE User SET episode = episode + 1 WHERE user_id = ?", (USER.id,))
                     # Insert log data
                     db.insert_data('INSERT INTO Logs (user_id, mission_id, cipher_id, success) VALUES (?, ?, ?, ?)', (USER.id, mission_id, cipher_data[0][1], True))
                     # Cipher correct
-                    return render_template('mission.html', user_id=user, mission_id=mission_id)
+                    session['mission_success'] = True  # Flash success message
+                    return redirect(url_for('game'))  # Redirect to /game
                 db.insert_data('INSERT INTO Logs (user_id, mission_id, cipher_id, success) VALUES (?, ?, ?, ?)', (USER.id, mission_id, "Failed", False))
                 return render_template('error.html', site="/game", error_code=3)
         elif request.method == 'POST' and 'back_game' in request.form:
