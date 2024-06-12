@@ -10,7 +10,18 @@
     {% elif error_code == 2 %}
     <h1>Mission code incorrect</h1>
     <p>The mission code you entered is incorrect. Please try again.</p>
+    {% elif error_code == 3 %}
+    <h1>Mission Failed</h1>
+    <p>The Cipher code you entered is incorrect.</p>
+    <p>The mission cannot continue.</p>
+    {% elif error_code == 4 %}
+    <h1>Access Error</h1>
+    <p>You can only advance to this page once.</p>
+    {% elif error_code == 5 %}
+    <h1>Mission Error</h1>
+    <p>You have already entered the code for this mission.</p>
+    <p>You can only enter the cipher once.</p>
     {% endif %}
 
-        <a href={{ site }}>Go Back to {{ site }}</a>  </body>
+    <a href={{ site }}>Go Back to {{ site }}</a>  </body>
 </html>

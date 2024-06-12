@@ -2,18 +2,37 @@
 <html lang="ja">
 <head>
   <title>MISSION</title>
+  <style>
+    #progress-bar {
+        height: 20px; /* Adjust height as desired */
+        width: 0; /* Initially zero width */
+        background-color: #007bff; /* Adjust color as desired */
+        transition: width 1s ease-in-out; /* Add smooth transition */
+        border: 1px solid #ccc;
+        border-radius: 5px; /* Add rounded corners */
+    }
+
+    #progress-container {
+        width: 100%; /* Full width of the parent */
+        background-color: #ddd;
+        border-radius: 5px; /* Match the progress bar's corners */
+    }
+  </style>
 </head>
 <body>
     <header>
         <h1>MISSION</h1>
     </header>
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
     <p>{{ user_id }}</p>
     <p>{{ mission_id }}</p>
     <form method="POST">
         <input type="text" name="cipher" placeholder="cipher" required>
         <input type="hidden" name="cipher_entry">
-        <input type="submit" value="Next">
-    </form>
+        <input type="submit" value="Next" id="submit-button">
+    </form>      
     <form method="POST">
         <input type="hidden" name="back_game">
         <input type="submit" value="Back">
@@ -21,5 +40,24 @@
     {% if error %}
         <p class="error">{{ error }}</p>
     {% endif %}
+    
+    <p id="time-display"></p> <!-- Add this element for displaying time -->
+
+    <!-- Pass end_time variable from Python -->
+    <input type="hidden" id="end-time" value="{{ end_time }}"> <!-- Ensure this is included -->
+
+    <!-- Reference the external JavaScript file -->
+    <script src="/static/js/timer.js"></script>
+
+    <script>
+        const submitButton = document.getElementById('submit-button');
+      
+        submitButton.addEventListener('click', function(event) {
+          const confirmation = confirm("You can only submit the cipher once. Are you sure you want to submit it?");
+          if (!confirmation) {
+            event.preventDefault(); // Prevent form submission if not confirmed
+          }
+        });
+    </script>
 </body>
 </html>
