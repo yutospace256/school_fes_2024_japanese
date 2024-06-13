@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <title>User Not Found</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
     {% if error_code == 1 %}
@@ -24,4 +25,7 @@
     {% endif %}
 
     <a href={{ site }}>Go Back to {{ site }}</a>  </body>
+
+    
+</body>
 </html>

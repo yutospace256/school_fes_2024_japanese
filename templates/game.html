@@ -2,22 +2,7 @@
 <html lang="ja">
 <head>
   <title>GAME HOME</title>
-  <style>
-    #progress-bar {
-      height: 20px; /* Adjust height as desired */
-      width: 0; /* Initially zero width */
-      background-color: #007bff; /* Adjust color as desired */
-      transition: width 1s ease-in-out; /* Add smooth transition */
-      border: 1px solid #ccc;
-      border-radius: 5px; /* Add rounded corners */
-    }
-    
-    #progress-container {
-      width: 100%; /* Full width of the parent */
-      background-color: #ddd;
-      border-radius: 5px; /* Match the progress bar's corners */
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
   <header>
@@ -26,7 +11,7 @@
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
-  <a>Mission Code</a>
+  <p>Mission Code</p>
   <p id="user-id">{{ user_id }}</p> <!-- Added id attribute -->
   <form method="POST">
     <input type="text" name="mission_code" placeholder="Mission Code" required>

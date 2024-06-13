@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("Parsed End Time: ", endTime); // Log parsed end time
     var timeDisplay = document.getElementById('time-display'); 
     var progressBar = document.getElementById('progress-bar');
+    var hint = document.getElementById('hint');
 
     function updateTime() {
         var currentTime = new Date();
@@ -31,11 +32,17 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    function displayHint() {
+        hint.style.display = 'block'; // Show the hint
+    }
+
     var timerInterval;
+    var hintTimeout;
 
     function startTimer() {
         updateTime(); // Call update function on page load
         timerInterval = setInterval(updateTime, 1000); // Update time every second
+        hintTimeout = setTimeout(displayHint, 45000); // Display the hint after 45 seconds
     }
 
     startTimer();

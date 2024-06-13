@@ -92,12 +92,16 @@ def introduce():
 @app.route('/game', methods=['GET', 'POST'])
 def game():
     user = cop.get_user_id()
+    USER = User(user[0][1], user[0][2], user[0][3], user[0][4], user[0][5])
     if user:
         game_start = session.get('game_start')
-        print(game_start)
-        if request.method == 'POST' and 'missioncode' in request.form:
-            input_code = request.form['mission_code']
-            with SqliteConnector('fes_app.db') as db:
+        with SqliteConnector('fes_app.db') as db:
+            episode = db.fetch_data('SELECT episode FROM User WHERE user_id = ?', (USER.id,))
+            episode= episode[0][0]
+            if episode >= 3:
+                return redirect(url_for('succeeded'))
+            if request.method == 'POST' and 'missioncode' in request.form:
+                input_code = request.form['mission_code']
                 # Get the data for mission_code=input_code in the misssion table.
                 mission = db.fetch_data('SELECT * FROM mission WHERE mission_code = ?', (input_code,))
                 if mission:
@@ -124,6 +128,7 @@ def mission():
         if request.method == 'POST' and 'cipher_entry' in request.form:
             cipher = request.form['cipher']
             with SqliteConnector('fes_app.db') as db:
+                print(mission_id, cipher)
                 cipher_data = db.fetch_data('SELECT * FROM Cipher WHERE mission_id = ? AND cipher = ?', (mission_id, cipher))
                 if cipher_data:
                     # Check if user_id =USER.id,cipher_id=cipher_data[0][1] exists in the Logs table.
@@ -151,7 +156,12 @@ def mission():
         else:
             end_time = game_start + timedelta(minutes=5)
             end_time_timestamp = int(end_time.timestamp() * 1000)  # Convert to milliseconds
-            return render_template('mission.html', user_id=user, mission_id=mission_id, end_time=end_time_timestamp)
+            with SqliteConnector('fes_app.db') as db:
+                img_data = db.fetch_data("SELECT img_domain, hint_message FROM mission WHERE mission_id = ?", (mission_id,))
+            img_domain, hint_message = img_data[0]
+            print(img_domain, hint_message)
+            # Send image data to HTML
+            return render_template('mission.html', user_id=user, mission_id=mission_id, end_time=end_time_timestamp, img_domain=img_domain, hint_message=hint_message)
     else:
         return render_template("error.html", site="/mission", error_code=1)
 
@@ -160,6 +170,14 @@ def failed():
     user = cop.get_user_id()
     if user:
         return render_template('failed.html', user_id=user)
+    else:
+        return render_template("error.html", site="/failed", error_code=1)
+
+@app.route('/succeeded', methods=['GET', 'POST'])
+def succeeded():
+    user = cop.get_user_id()
+    if user:
+        return render_template('succeeded.html', user_id=user)
     else:
         return render_template("error.html", site="/failed", error_code=1)
 

@@ -2,22 +2,7 @@
 <html lang="ja">
 <head>
   <title>MISSION</title>
-  <style>
-    #progress-bar {
-        height: 20px; /* Adjust height as desired */
-        width: 0; /* Initially zero width */
-        background-color: #007bff; /* Adjust color as desired */
-        transition: width 1s ease-in-out; /* Add smooth transition */
-        border: 1px solid #ccc;
-        border-radius: 5px; /* Add rounded corners */
-    }
-
-    #progress-container {
-        width: 100%; /* Full width of the parent */
-        background-color: #ddd;
-        border-radius: 5px; /* Match the progress bar's corners */
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
     <header>
@@ -28,6 +13,7 @@
     </div>
     <p>{{ user_id }}</p>
     <p>{{ mission_id }}</p>
+    <img src="{{ img_domain }}">
     <form method="POST">
         <input type="text" name="cipher" placeholder="cipher" required>
         <input type="hidden" name="cipher_entry">
@@ -42,6 +28,7 @@
     {% endif %}
     
     <p id="time-display"></p> <!-- Add this element for displaying time -->
+    <p id="hint" style="display:none;">{{ hint_message }}</p> <!-- Add this element for displaying hint -->
 
     <!-- Pass end_time variable from Python -->
     <input type="hidden" id="end-time" value="{{ end_time }}"> <!-- Ensure this is included -->
