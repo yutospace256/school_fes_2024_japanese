@@ -13,11 +13,45 @@
   </div>
   <p>Mission Code</p>
   <p id="user-id">{{ user_id }}</p> <!-- Added id attribute -->
-  <form method="POST">
-    <input type="text" name="mission_code" placeholder="Mission Code" required>
-    <input type="hidden" name="missioncode">
-    <input type="submit" value="Next">
+  <form method="POST" onsubmit="return validateMissionCode()">
+      <input type="text" id="digit1" class="digit-input" maxlength="1" required>
+      <input type="text" id="digit2" class="digit-input" maxlength="1" required>
+      <input type="text" id="digit3" class="digit-input" maxlength="1" required>
+      <input type="hidden" name="mission_code" id="mission_code">
+      <input type="submit" value="Next">
   </form>
+
+  <script>
+      const inputs = document.querySelectorAll('.digit-input');
+      
+      inputs.forEach((input, index) => {
+          input.addEventListener('input', (e) => {
+              const value = e.target.value;
+              if (value.length === 1 && index < inputs.length - 1) {
+                  inputs[index + 1].focus();
+              }
+          });
+
+          input.addEventListener('keydown', (e) => {
+              if (e.key === 'Backspace' && index > 0 && e.target.value === '') {
+                  inputs[index - 1].focus();
+              }
+          });
+      });
+
+      function validateMissionCode() {
+          const missionCode = Array.from(inputs).map(input => input.value).join('');
+          const missionCodePattern = /^\d{3}$/;
+          
+          if (!missionCodePattern.test(missionCode)) {
+              alert('Please enter a valid 3-digit mission code.');
+              return false;
+          }
+          
+          document.getElementById('mission_code').value = missionCode;
+          return true;
+      }
+  </script>
   <p>{{ message }}</p>
   <p id="time-display"></p>  
 

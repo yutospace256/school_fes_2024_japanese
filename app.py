@@ -100,7 +100,7 @@ def game():
             episode= episode[0][0]
             if episode >= 3:
                 return redirect(url_for('succeeded'))
-            if request.method == 'POST' and 'missioncode' in request.form:
+            if request.method == 'POST' and 'mission_code' in request.form:
                 input_code = request.form['mission_code']
                 # Get the data for mission_code=input_code in the misssion table.
                 mission = db.fetch_data('SELECT * FROM mission WHERE mission_code = ?', (input_code,))

@@ -9,15 +9,32 @@
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background-color: #f4f4f4;
+    color: white;
+    background-color: #0000;
     padding: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: white;
 }
 
 /* Heading Styles */
 h1, h2, h3, h4, h5, h6 {
     margin-bottom: 15px;
-    color: #444;
+    color: white;
 }
 
 /* Paragraphs */
@@ -59,7 +76,76 @@ input, textarea {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 100%;
+    width: 40%;
+}
+
+/* Hide the default checkbox */
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+/* Create a custom checkmark */
+.custom-checkbox .checkmark {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    background-color: #ccc;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* Style the checkmark when checked */
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: #4CAF50;
+}
+
+/* Create the checkmark symbol */
+.custom-checkbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Style for the label */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Style for the submit button */
+input[type="submit"] {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
 }
 
 button {
@@ -87,12 +173,35 @@ button:hover {
     width: 0; /* Initially zero width */
     background-color: #007bff; /* Adjust color as desired */
     transition: width 1s ease-in-out; /* Add smooth transition */
-    border: 1px solid #ccc;
     border-radius: 5px; /* Add rounded corners */
 }
-  
-  #progress-container {
+
+#progress-container {
     width: 100%; /* Full width of the parent */
     background-color: #ddd;
+    border: 1px solid #ccc;
     border-radius: 5px; /* Match the progress bar's corners */
+}
+
+.blink {
+    animation: blink-animation 1s steps(5, start) infinite;
+    -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+@-webkit-keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+
+/* Black background */
+html {
+    background-color: black;
 }

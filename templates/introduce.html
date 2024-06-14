@@ -13,7 +13,12 @@
     <p>{{ user_id }}</p>
     <p>{{ session_user_id }}</p>
     <form method="POST">
-        <input type="checkbox" required>
-        <input type="submit" name="game_start" value="Next">
-      </form>      
+      <label class="custom-checkbox">
+          <input type="checkbox" required>
+          <span class="checkmark"></span>
+          Agree to terms
+      </label>
+      <input type="submit" name="game_start" value="Next">
+    </form>
+  </body>
 </html>

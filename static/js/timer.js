@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var endTimeTimestamp = parseInt(document.getElementById('end-time').value);
+    var endTimeTimestamp = parseInt(document.getElementById('end-time').value, 10);
     console.log("End Time Timestamp: ", endTimeTimestamp); // Log end time timestamp
     var endTime = new Date(endTimeTimestamp); // Parse end_time from hidden input as a date object
     console.log("Parsed End Time: ", endTime); // Log parsed end time
@@ -20,6 +20,16 @@ document.addEventListener("DOMContentLoaded", function() {
             var progress = Math.min(remainingTime, totalTime) / totalTime * 100;
             console.log("Progress: ", progress); // Log progress
             progressBar.style.width = progress + '%';  // Update width based on progress
+
+            // Change color to red and make it blink if remaining time is 30 seconds or less
+            if (remainingTime <= 30 * 1000) {
+                progressBar.style.backgroundColor = 'red';
+                progressBar.classList.add('blink'); // Add blink class
+            } else {
+                progressBar.style.backgroundColor = '#007bff'; // Reset to original color
+                progressBar.classList.remove('blink'); // Remove blink class
+            }
+
             timeDisplay.textContent = Math.floor(remainingTime / 1000) + 's';  // Display remaining seconds
         } else if (remainingTime <= 0) {
             progressBar.style.width = '0%'; // Set to 0% if time has expired
