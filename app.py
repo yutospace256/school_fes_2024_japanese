@@ -75,13 +75,8 @@ def introduce():
     if user:
         if request.method == 'POST' and 'game_start' in request.form:
             if session.get('game_done', False):  # Check with default value
-                game_start = datetime.now(timezone.utc)
-                session['game_start'] = game_start
-                return redirect(url_for('game')) 
-                # return render_template('error.html', site="/introduce", error_code=4)
+                return render_template('error.html', site="/introduce", error_code=4)
             else:
-
-                
                 session['game_done'] = True
                 # Use GMT timezone
                 game_start = datetime.now(timezone.utc)
@@ -115,7 +110,6 @@ def game():
                     return redirect(url_for('mission'))
                 else:
                     return render_template("error.html", site="/game", error_code=2)  # Handle case where mission is not found
-
         if session.get('mission_success'):
             session.pop('mission_success', None)  # Clear the flag after displaying the message
             return render_template('game.html', user_id=user, end_time=end_time_timestamp, message="ミッション成功", episode=episode)
