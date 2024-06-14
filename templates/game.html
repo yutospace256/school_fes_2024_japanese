@@ -13,12 +13,12 @@
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
-  <p>Mission Code</p>
-  <p id="user-id">{{ user_id }}</p> <!-- Added id attribute -->
+  <p>ミッションコード(半角で入力してください。)</p>
+<!-- Added id attribute -->
   <form method="POST" onsubmit="return validateMissionCode()">
-      <input type="text" id="digit1" class="digit-input" maxlength="1" required>
-      <input type="text" id="digit2" class="digit-input" maxlength="1" required>
-      <input type="text" id="digit3" class="digit-input" maxlength="1" required>
+      <input type="number" id="digit1" class="digit-input" maxlength="1" required>
+      <input type="number" id="digit2" class="digit-input" maxlength="1" required>
+      <input type="number" id="digit3" class="digit-input" maxlength="1" required>
       <input type="hidden" name="mission_code" id="mission_code">
       <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
   </form>

@@ -8,17 +8,14 @@
 </head>
 <body>
     <header>
-        <h1>INTRODUCE</h1>
+        <h1>スタート画面</h1>
     </header>
-    <p>Mission description.</p>
     <!-- Create a check box to check if you understand and proceed to ‘/game’. -->
-    <p>{{ user_id }}</p>
-    <p>{{ session_user_id }}</p>
     <form method="POST">
       <label class="custom-checkbox">
           <input type="checkbox" required>
           <span class="checkmark"></span>
-          Agree to terms
+          <p>ゲーム開始！</p>
       </label>
       <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
       <input type="hidden" name="game_start">

@@ -5,21 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIGNIN</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script>
+    // Function to generate random username and password
+    function generateRandomString(length) {
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var result = '';
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    }
+
+    // Function to auto-generate and fill username and password
+    function autoGenerate() {
+      var username = generateRandomString(8);
+      var password = generateRandomString(12);
+      document.getElementsByName('username')[0].value = username;
+      document.getElementsByName('password')[0].value = password;
+    }
+  </script>
 </head>
 <body>
     <header>
         <h1>SIGNIN</h1>
     </header>
     <div class="container">
-        <p>Signin</p>
         <form action="/signin" method="POST" style="display:block;">
             <input type="text" name="username" placeholder="USERNAME" required>
-            <input type="text" name="password" placeholder="PASSWORD" required>
+            <input type="password" name="password" placeholder="PASSWORD" required>
             <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
-          </form>   
-      </div>
-      {% if error %}
+        </form>
+        <button type="button" onclick="autoGenerate()">Auto Generate</button> <!-- Auto-generate button -->
+    </div>
+    {% if error %}
         <p class="error">{{ error }}</p>
-      {% endif %}
+    {% endif %}
 </body>
 </html>

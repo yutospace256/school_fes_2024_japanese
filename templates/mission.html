@@ -8,16 +8,13 @@
 </head>
 <body>
     <header>
-        <h1>MISSION</h1>
     </header>
     <div id="progress-container">
         <div id="progress-bar"></div>
     </div>
-    <p>{{ user_id }}</p>
-    <p>{{ mission_id }}</p>
     <img src="{{ img_domain }}">
     <form method="POST">
-        <input type="text" name="cipher" placeholder="cipher" required>
+        <input type="text" name="cipher" placeholder="答え" required>
         <input type="hidden" name="cipher_entry">
         <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
     </form>      
@@ -29,7 +26,6 @@
         <p class="error">{{ error }}</p>
     {% endif %}
     
-    <p id="time-display"></p> <!-- Add this element for displaying time -->
     <p id="hint" style="display:none;">{{ hint_message }}</p> <!-- Add this element for displaying hint -->
 
     <!-- Pass end_time variable from Python -->
