@@ -77,8 +77,7 @@ def introduce():
             if session.get('game_done', False):  # Check with default value
                 return render_template('error.html', site="/introduce", error_code=4)
             else:
-                # tempolary commented
-                # session['game_done'] = True
+                session['game_done'] = True
                 # Use GMT timezone
                 game_start = datetime.now(timezone.utc)
                 session['game_start'] = game_start
