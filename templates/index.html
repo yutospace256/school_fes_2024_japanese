@@ -7,6 +7,16 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
+    <div id="loading-screen">
+        <h1>Loading...</h1>
+    </div>
+    <script>
+      window.addEventListener('load', function() {
+          // When the page is fully loaded, hide the loading screen
+          document.getElementById('loading-screen').style.display = 'none';
+      });
+    </script>
+
     <header>
         <h1>APP NAME</h1>
     </header>

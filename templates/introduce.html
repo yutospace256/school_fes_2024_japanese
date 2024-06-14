@@ -7,8 +7,17 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
+    <div id="loading-screen">
+        <h1>Loading...</h1>
+    </div>
+    <script>
+      window.addEventListener('load', function() {
+          // When the page is fully loaded, hide the loading screen
+          document.getElementById('loading-screen').style.display = 'none';
+      });
+    </script>
     <header>
-        <h1>スタート画面</h1>
+        <h1>スタート</h1>
     </header>
     <!-- Create a check box to check if you understand and proceed to ‘/game’. -->
     <form method="POST">
@@ -17,7 +26,7 @@
           <span class="checkmark"></span>
           <p>ゲーム開始！</p>
       </label>
-      <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
+      <input type="image" src="static\img\form_enter_button.png" alt="Submit" class="submit-image">
       <input type="hidden" name="game_start">
     </form>
   </body>

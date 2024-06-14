@@ -7,21 +7,33 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
+  <div id="loading-screen">
+      <h1>Loading...</h1>
+  </div>
+  <script>
+    window.addEventListener('load', function() {
+        // When the page is fully loaded, hide the loading screen
+        document.getElementById('loading-screen').style.display = 'none';
+    });
+  </script>
   <header>
     <h1>GAME HOME</h1>
   </header>
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
-  <p>ミッションコード(半角で入力してください。)</p>
+  
 <!-- Added id attribute -->
-  <form method="POST" onsubmit="return validateMissionCode()">
-      <input type="number" id="digit1" class="digit-input" maxlength="1" required>
-      <input type="number" id="digit2" class="digit-input" maxlength="1" required>
-      <input type="number" id="digit3" class="digit-input" maxlength="1" required>
-      <input type="hidden" name="mission_code" id="mission_code">
-      <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
-  </form>
+  {% if episode < 3 %}
+      <p>ミッションコード(半角で入力してください。)</p>
+      <form method="POST" onsubmit="return validateMissionCode()">
+          <input type="number" id="digit1" class="digit-input" maxlength="1" required>
+          <input type="number" id="digit2" class="digit-input" maxlength="1" required>
+          <input type="number" id="digit3" class="digit-input" maxlength="1" required>
+          <input type="hidden" name="mission_code" id="mission_code">
+          <input type="image" src="static\img\form_enter_button.png" alt="Submit" class="submit-image">
+      </form>
+  {% endif %}
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -58,9 +70,25 @@
         return true;
     }
   </script>
-  <p>{{ message }}</p>
-  <p id="time-display"></p>  
+  <p>{{ message }}</p>  
 
+  <!-- Display image -->
+  {% for i in range(1, episode + 1) %}
+      <img src="static/img/crystal_img.png" class="crystal">
+  {% endfor %}
+  {% for i in range(episode, 3) %}
+      <img src="static\img\crystal_blank_img.png" class="crystal">
+  {% endfor %}
+  {% if episode >= 3 %}
+    <form action="/succeeded">
+      <input type="image" src="static\img\form_clear_button.png" alt="Submit" class="submit-image">
+    </form>
+  {% endif %}
+
+  {% if episode < 3 %}
+      <p id="time-display" class="time"></p>
+  {% endif %}
+  
   <!-- Pass end_time variable from Python -->
   <input type="hidden" id="end-time" value="{{ end_time }}">
 

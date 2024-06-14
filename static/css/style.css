@@ -205,11 +205,11 @@ button:hover {
 }
 
 .submit-image {
-    height: 50px; /* Set the same height as the text inputs */
-    width: 10%; /* Maintain aspect ratio */
+    width: 70px; /* Set the same height as the text inputs */
     border: none;
     padding: 0;
     cursor: pointer;
+    object-fit: cover;
 }
 
 /* Container */
@@ -239,9 +239,48 @@ button:hover {
     border-radius: 5px; /* Match the progress bar's corners */
 }
 
+.crystal {
+    display: inline-block;
+    object-fit: cover;
+    width: 50px;
+    background-color: #000;
+    margin: 10px;
+    animation: spin 2s linear infinite;
+}
+
+.crystal-blank {
+    display: inline-block;
+    object-fit: cover;
+    width: 50px;
+    background-color: #fff;
+    margin: 10px;
+    animation: spin 2s linear infinite;
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 .blink {
     animation: blink-animation 1s steps(5, start) infinite;
     -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+
+.time {
+    color: #000;
+}
+
+.epilogue {
+    color: #888;
+    font-size: 20px;
 }
 
 @keyframes blink-animation {

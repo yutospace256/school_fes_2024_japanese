@@ -7,8 +7,15 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
-    <header>
-    </header>
+    <div id="loading-screen">
+        <h1>Loading...</h1>
+    </div>
+    <script>
+      window.addEventListener('load', function() {
+          // When the page is fully loaded, hide the loading screen
+          document.getElementById('loading-screen').style.display = 'none';
+      });
+    </script>
     <div id="progress-container">
         <div id="progress-bar"></div>
     </div>
@@ -16,18 +23,18 @@
     <form method="POST">
         <input type="text" name="cipher" placeholder="答え" required>
         <input type="hidden" name="cipher_entry">
-        <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
+        <input type="image" src="static\img\form_enter_button.png" alt="Submit" class="submit-image">
     </form>      
     <form method="POST">
         <input type="hidden" name="back_game">
-        <input type="image" src="static\img\form_back_bottam.png" alt="Submit" class="submit-image">
+        <input type="image" src="static\img\form_back_button.png" alt="Submit" class="submit-image">
     </form>
     {% if error %}
         <p class="error">{{ error }}</p>
     {% endif %}
     
     <p id="hint" style="display:none;">{{ hint_message }}</p> <!-- Add this element for displaying hint -->
-
+    <p id="time-display" class="time"></p>
     <!-- Pass end_time variable from Python -->
     <input type="hidden" id="end-time" value="{{ end_time }}"> <!-- Ensure this is included -->
 

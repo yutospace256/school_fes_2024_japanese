@@ -27,6 +27,15 @@
   </script>
 </head>
 <body>
+    <div id="loading-screen">
+        <h1>Loading...</h1>
+    </div>
+    <script>
+      window.addEventListener('load', function() {
+          // When the page is fully loaded, hide the loading screen
+          document.getElementById('loading-screen').style.display = 'none';
+      });
+    </script>
     <header>
         <h1>SIGNIN</h1>
     </header>
@@ -34,7 +43,7 @@
         <form action="/signin" method="POST" style="display:block;">
             <input type="text" name="username" placeholder="USERNAME" required>
             <input type="password" name="password" placeholder="PASSWORD" required>
-            <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
+            <input type="image" src="static\img\form_enter_button.png" alt="Submit" class="submit-image">
         </form>
         <button type="button" onclick="autoGenerate()">Auto Generate</button> <!-- Auto-generate button -->
     </div>

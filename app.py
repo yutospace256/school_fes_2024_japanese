@@ -99,26 +99,27 @@ def game():
     USER = User(user[0][1], user[0][2], user[0][3], user[0][4], user[0][5])
     if user:
         game_start = session.get('game_start')
+        end_time = game_start + timedelta(minutes=5)
+        end_time_timestamp = int(end_time.timestamp() * 1000)  # Convert to milliseconds
         with SqliteConnector('fes_app.db') as db:
             episode = db.fetch_data('SELECT episode FROM User WHERE user_id = ?', (USER.id,))
             episode= episode[0][0]
             if episode >= 3:
-                return redirect(url_for('succeeded'))
+                return render_template('game.html', user_id=user, end_time=end_time_timestamp, episode=episode)
             if request.method == 'POST' and 'mission_code' in request.form:
                 input_code = request.form['mission_code']
                 # Get the data for mission_code=input_code in the misssion table.
-                mission = db.fetch_data('SELECT * FROM mission WHERE mission_code = ?', (input_code,))
+                mission = db.fetch_data('SELECT * FROM Mission WHERE mission_code = ?', (input_code,))
                 if mission:
                     session['mission_id'] = mission[0][1]
                     return redirect(url_for('mission'))
                 else:
                     return render_template("error.html", site="/game", error_code=2)  # Handle case where mission is not found
-        end_time = game_start + timedelta(minutes=5)
-        end_time_timestamp = int(end_time.timestamp() * 1000)  # Convert to milliseconds
+
         if session.get('mission_success'):
             session.pop('mission_success', None)  # Clear the flag after displaying the message
-            return render_template('game.html', user_id=user, end_time=end_time_timestamp, message="ミッション成功")
-        return render_template('game.html', user_id=user, end_time=end_time_timestamp)
+            return render_template('game.html', user_id=user, end_time=end_time_timestamp, message="ミッション成功", episode=episode)
+        return render_template('game.html', user_id=user, end_time=end_time_timestamp, episode=episode)
     else:
         return render_template("error.html", site="/game", error_code=1)  # Handle case where user is not found
     
@@ -183,7 +184,7 @@ def succeeded():
     if user:
         return render_template('succeeded.html', user_id=user)
     else:
-        return render_template("error.html", site="/failed", error_code=1)
+        return render_template("error.html", site="/succeeded", error_code=1)
 
 if __name__ == '__main__':
   app.run(debug=True)
