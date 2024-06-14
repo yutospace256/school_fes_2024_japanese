@@ -19,11 +19,11 @@
     <form method="POST">
         <input type="text" name="cipher" placeholder="cipher" required>
         <input type="hidden" name="cipher_entry">
-        <input type="submit" value="Next" id="submit-button">
+        <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
     </form>      
     <form method="POST">
         <input type="hidden" name="back_game">
-        <input type="submit" value="Back">
+        <input type="image" src="static\img\form_back_bottam.png" alt="Submit" class="submit-image">
     </form>
     {% if error %}
         <p class="error">{{ error }}</p>

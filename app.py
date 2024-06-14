@@ -75,9 +75,12 @@ def introduce():
     if user:
         if request.method == 'POST' and 'game_start' in request.form:
             if session.get('game_done', False):  # Check with default value
-                return render_template('error.html', site="/introduce", error_code=4)
+                return redirect(url_for('game'))
+                # return render_template('error.html', site="/introduce", error_code=4)
             else:
-                session['game_done'] = True
+
+                
+                # session['game_done'] = True
                 # Use GMT timezone
                 game_start = datetime.now(timezone.utc)
                 session['game_start'] = game_start

@@ -20,39 +20,43 @@
       <input type="text" id="digit2" class="digit-input" maxlength="1" required>
       <input type="text" id="digit3" class="digit-input" maxlength="1" required>
       <input type="hidden" name="mission_code" id="mission_code">
-      <input type="submit" value="Next">
+      <input type="image" src="static\img\form_enter_bottam.png" alt="Submit" class="submit-image">
   </form>
 
   <script>
-      const inputs = document.querySelectorAll('.digit-input');
-      
-      inputs.forEach((input, index) => {
-          input.addEventListener('input', (e) => {
-              const value = e.target.value;
-              if (value.length === 1 && index < inputs.length - 1) {
-                  inputs[index + 1].focus();
-              }
-          });
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('digit1').focus();
+    });
 
-          input.addEventListener('keydown', (e) => {
-              if (e.key === 'Backspace' && index > 0 && e.target.value === '') {
-                  inputs[index - 1].focus();
-              }
-          });
-      });
+    const inputs = document.querySelectorAll('.digit-input');
 
-      function validateMissionCode() {
-          const missionCode = Array.from(inputs).map(input => input.value).join('');
-          const missionCodePattern = /^\d{3}$/;
-          
-          if (!missionCodePattern.test(missionCode)) {
-              alert('Please enter a valid 3-digit mission code.');
-              return false;
-          }
-          
-          document.getElementById('mission_code').value = missionCode;
-          return true;
-      }
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            const value = e.target.value;
+            if (value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && index > 0 && e.target.value === '') {
+                inputs[index - 1].focus();
+            }
+        });
+    });
+
+    function validateMissionCode() {
+        const missionCode = Array.from(inputs).map(input => input.value).join('');
+        const missionCodePattern = /^\d{3}$/;
+        
+        if (!missionCodePattern.test(missionCode)) {
+            alert('Please enter a valid 3-digit mission code.');
+            return false;
+        }
+        
+        document.getElementById('mission_code').value = missionCode;
+        return true;
+    }
   </script>
   <p>{{ message }}</p>
   <p id="time-display"></p>  
