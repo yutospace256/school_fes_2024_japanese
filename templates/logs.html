@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+    <div id="loading-screen">
+        <h1>Loading...</h1>
+    </div>
+    <script>
+      window.addEventListener('load', function() {
+          // When the page is fully loaded, hide the loading screen
+          document.getElementById('loading-screen').style.display = 'none';
+      });
+    </script>
+    <h1>Logs</h1>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Time</th>
+                <th>Log</th>
+            </tr>
+            <p>{{ logs }}</p>
+            <p>{{ logs_2 }}</p>
+        </table>
+    </div>
+    <a href="/">最初の画面に戻る</a>
+</html>

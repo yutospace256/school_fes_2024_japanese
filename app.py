@@ -182,6 +182,13 @@ def succeeded():
         return render_template('succeeded.html', user_id=user)
     else:
         return render_template("error.html", site="/succeeded", error_code=1)
+    
+@app.route('/logs', methods=['GET', 'POST'])
+def logs():
+    with SqliteConnector('fes_app.db') as db:
+        logs = db.fetch_data("SELECT mission_id, COUNT(*) AS count FROM Logs GROUP BY mission_id")
+        logs_2 = db.fetch_data("SELECT mission_id, COUNT(*) AS count FROM Logs WHERE success = ? GROUP BY mission_id", (True,))
+    return render_template('logs.html', logs=logs, logs_2=logs_2)
 
 if __name__ == '__main__':
   app.run(debug=True)
