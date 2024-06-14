@@ -170,7 +170,7 @@ def failed():
     if user:
         return render_template('failed.html', user_id=user)
     else:
-        return render_template("error.html", site="/succeeded", error_code=1)
+        return render_template("error.html", site="/failed", error_code=1)
 
 @app.route('/succeeded', methods=['GET', 'POST'])
 def succeeded():
