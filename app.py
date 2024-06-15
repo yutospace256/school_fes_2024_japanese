@@ -109,13 +109,17 @@ def game():
                 # Get the data for mission_code=input_code in the misssion table.
                 mission = db.fetch_data('SELECT * FROM Mission WHERE mission_code = ?', (input_code,))
                 if mission:
-                    session['mission_id'] = mission[0][1]
-                    return redirect(url_for('mission'))
+                    if len(mission[0][4]) > 2:
+                        session['mission_id'] = mission[0][1]
+                        return redirect(url_for('mission_2'))
+                    else:    
+                        session['mission_id'] = mission[0][1]
+                        return redirect(url_for('mission'))
                 else:
                     return render_template("error.html", site="/game", error_code=2)  # Handle case where mission is not found
         if session.get('mission_success'):
             session.pop('mission_success', None)  # Clear the flag after displaying the message
-            return render_template('game.html', user_id=user, end_time=end_time_timestamp, message="ミッション成功", episode=episode)
+            return render_template('game.html', user_id=user, end_time=end_time_timestamp, message="水晶を獲得しました。", episode=episode)
         return render_template('game.html', user_id=user, end_time=end_time_timestamp, episode=episode)
     else:
         return render_template("error.html", site="/game", error_code=1)  # Handle case where user is not found
@@ -167,11 +171,58 @@ def mission():
     else:
         return render_template("error.html", site="/mission", error_code=1)
 
+@app.route('/mission_2', methods=['GET', 'POST'])
+def mission_2():
+    user = cop.get_user_id()
+    mission_id = session.get('mission_id')
+    game_start = session.get('game_start')
+    USER = User(user[0][1], user[0][2], user[0][3], user[0][4], user[0][5])
+    if user:
+        if request.method == 'POST' and 'cipher_entry' in request.form:
+            cipher = request.form['cipher']
+            with SqliteConnector('fes_app.db') as db:
+                print(mission_id, cipher)
+                cipher_data = db.fetch_data('SELECT * FROM Cipher WHERE mission_id = ? AND cipher = ?', (mission_id, cipher))
+                if cipher_data:   
+                    # Update points and episode using retrieved data (assuming User class with add_points)
+                    USER.add_points(cipher_data[0][4])
+                    # Update data in USER.points to the points column of the User table in sql
+                    db.update_data('UPDATE User SET points = ? WHERE user_id = ?', (USER.points, USER.id))
+                    db.update_data("UPDATE User SET episode = episode + 1 WHERE user_id = ?", (USER.id,))
+                    # Insert log data
+                    db.insert_data('INSERT INTO Logs (user_id, mission_id, cipher_id, success) VALUES (?, ?, ?, ?)', (USER.id, mission_id, cipher_data[0][1], True))
+                    # Cipher correct
+                    session['mission_success'] = True  # Flash success message
+                    return redirect(url_for('game'))  # Redirect to /game
+                db.insert_data('INSERT INTO Logs (user_id, mission_id, cipher_id, success) VALUES (?, ?, ?, ?)', (USER.id, mission_id, "Failed", False))
+                return render_template('error.html', site="/mission_2", error_code=6)
+        elif request.method == 'POST' and 'back_game' in request.form:
+            # progress episode 
+            # I should update this code for episode progress
+            with SqliteConnector('fes_app.db') as db:
+                db.update_data('UPDATE User SET points = ? WHERE user_id = ?', (USER.points, USER.id))
+            return redirect(url_for('game'))
+        else:
+            end_time = game_start + timedelta(minutes=5)
+            end_time_timestamp = int(end_time.timestamp() * 1000)  # Convert to milliseconds
+            with SqliteConnector('fes_app.db') as db:
+                img_data = db.fetch_data("SELECT img_domain, hint_message FROM mission WHERE mission_id = ?", (mission_id,))
+            img_domain, hint_message = img_data[0]
+            print(img_domain, hint_message)
+            # Send image data to HTML
+            return render_template('mission_2.html', user_id=user, mission_id=mission_id, end_time=end_time_timestamp, img_domain=img_domain, hint_message=hint_message)
+    else:
+        return render_template("error.html", site="/mission", error_code=1)
+
 @app.route('/failed', methods=['GET', 'POST'])
 def failed():
     user = cop.get_user_id()
     if user:
-        return render_template('failed.html', user_id=user)
+        USER = User(user[0][1], user[0][2], user[0][3], user[0][4], user[0][5])
+        with SqliteConnector('fes_app.db') as db:
+            episode = db.fetch_data('SELECT episode FROM User WHERE user_id = ?', (USER.id,))
+            episode= episode[0][0]
+        return render_template('failed.html', user_id=user, episode=episode)
     else:
         return render_template("error.html", site="/failed", error_code=1)
 

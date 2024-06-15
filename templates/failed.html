@@ -6,7 +6,7 @@
   <title>FAILED</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
-<body>
+<body class="background-failed">
     <div id="loading-screen">
         <h1>Loading...</h1>
     </div>
@@ -15,8 +15,18 @@
           // When the page is fully loaded, hide the loading screen
           document.getElementById('loading-screen').style.display = 'none';
       });
+
+      // Set the background image using JavaScript
+      document.body.style.backgroundImage = "url('{{ url_for('static', filename='img/gameove_img.jpg') }}')";
     </script>
-    <h1>ミッション失敗</h1>
-    <a href="/">最初の画面に戻る</a>
+    
+    <h1>Mission Failed</h1>
+    <p>{{ episode }} crystals were awarded.</p>
+    {% for i in range(1, episode + 1) %}
+        <img src="{{ url_for('static', filename='img/crystal_img.png') }}" class="crystal">
+    {% endfor %}
+    {% for i in range(episode, 3) %}
+        <img src="{{ url_for('static', filename='img/crystal_blank_img.png') }}" class="crystal">
+    {% endfor %}
 </body>
 </html>

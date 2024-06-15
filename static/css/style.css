@@ -14,6 +14,17 @@ body {
     padding: 20px;
 }
 
+.background-failed {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 100vh; /* Ensure the background covers the full viewport height */
+}
+
+.mission-succeed {
+    font-size: 50px;
+}
+
 .top-bar {
     position: fixed;
     top: 0;
