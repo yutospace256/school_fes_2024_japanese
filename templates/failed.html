@@ -19,9 +19,7 @@
       // Set the background image using JavaScript
       document.body.style.backgroundImage = "url('{{ url_for('static', filename='img/gameove_img.jpg') }}')";
     </script>
-    
-    <h1>Mission Failed</h1>
-    <p>{{ episode }} crystals were awarded.</p>
+    <p>{{ episode }}個水晶を獲得しました。</p>
     {% for i in range(1, episode + 1) %}
         <img src="{{ url_for('static', filename='img/crystal_img.png') }}" class="crystal">
     {% endfor %}

@@ -223,6 +223,14 @@ button:hover {
     object-fit: cover;
 }
 
+.clear-image {
+    width: 175px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    object-fit: cover;
+}
+
 /* Container */
 .container {
     max-width: 1200px;
